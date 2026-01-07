@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IRFAN Project - Withdraw Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET & VARIABEL --- */
+        :root {
+            /* Backgrounds */
+            --bg-body: #121212;       
+            --bg-sidebar: #1c1c1c;    
+            --bg-card: #242424;       
+            --bg-input: #2a2a2a;      
+            --bg-hover: #333333;      
+            
+            /* Borders */
+            --border-light: #404040;  
+            --border-focus: #525252;
+
+            /* Teks */
+            --text-main: #e5e5e5;     
+            --text-sub: #a3a3a3;      
+            --text-muted: #737373;    
+
+            /* Aksen UI */
+            --primary: #ffffff;           
+            --primary-hover: #d4d4d4;     
+            --text-on-primary: #121212;   
+
+            /* Warna Data */
+            --col-bank: #ffffff;       
+            --col-rek: #d4d4d8;        
+            --col-user: #d4d4d8;       
+            --col-nama: #a3a3a3;       
+            --col-amt: #a7f3d0;        
+
+            /* --- WARNA BRAND BANK (Untuk Logo) --- */
+            --color-bca: #005eb8;
+            --color-bri: #003d79;
+            --color-mandiri: #ffb81c;
+            --color-bni: #f97e16;
+            --color-cimb: #e6332a;
+            --color-dana: #118EEA;
+            --color-ovo: #4c3494;
+            --color-link: #ee3124;
+            --color-danamon: #00529c;
+            --color-sea: #ff5e1f;
+            --color-jago: #091658;
+            --color-gopay: #00AED6;
+
+            --radius-sm: 6px;
+            --radius-md: 20px; /* Untuk Chip */
+            --shadow-subtle: 0 2px 8px rgba(0,0,0,0.15);
+            
+            --font-main: 'Inter', sans-serif;
+            --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            font-size: 14px;
+            line-height: 1.6; 
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #4a4a4a; border-radius: 3px; }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 240px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            width: 24px; height: 24px;
+            background-color: var(--primary);
+            border-radius: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            color: var(--text-sub);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            margin-bottom: 4px;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .nav-link:hover { background-color: var(--bg-hover); color: var(--text-main); }
+        
+        .nav-link.active { 
+            background-color: var(--primary); 
+            color: var(--text-on-primary); 
+            font-weight: 600;
+        }
+        .nav-icon { margin-right: 10px; font-size: 16px; opacity: 0.7; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow: hidden; 
+        }
+
+        header h1 { font-size: 24px; font-weight: 600; color: var(--text-main); }
+        header p { color: var(--text-sub); font-size: 13px; margin-top: 4px; }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- INPUT SECTION --- */
+        textarea {
+            width: 100%;
+            height: 140px;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            resize: none;
+        }
+        textarea:focus { border-color: var(--primary); }
+
+        .toolbar {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary { 
+            background-color: var(--primary); 
+            color: var(--text-on-primary); 
+        }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        
+        .btn-secondary { background-color: transparent; border: 1px solid var(--border-light); color: var(--text-sub); }
+        .btn-secondary:hover { background-color: var(--bg-hover); color: var(--text-main); border-color: var(--text-sub); }
+
+        /* --- FILTER SECTION --- */
+        .filter-area {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 10px;
+        }
+
+        .chip {
+            padding: 6px 12px;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .chip:hover { border-color: var(--text-sub); color: var(--text-main); transform: translateY(-1px); }
+        .chip.active { 
+            background-color: var(--primary); 
+            color: var(--text-on-primary); 
+            border-color: var(--primary); 
+            font-weight: 700;
+            box-shadow: 0 2px 5px rgba(255,255,255,0.1);
+        }
+
+        /* SVG Logo Style */
+        .chip svg {
+            width: 20px; 
+            height: 20px; 
+            flex-shrink: 0;
+        }
+
+        /* --- RESULT LIST --- */
+        .result-wrapper {
+            flex-grow: 1;
+            overflow-y: auto;
+            position: relative;
+            min-height: 200px;
+        }
+
+        .list-header {
+            display: grid;
+            grid-template-columns: 100px 130px 100px 1fr 100px 40px;
+            padding: 10px 15px;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-light);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .list-row {
+            display: grid;
+            grid-template-columns: 100px 130px 100px 1fr 100px 40px;
+            padding: 12px 15px;
+            border-bottom: 1px solid #2f2f2f;
+            align-items: center;
+            font-size: 13px;
+            font-family: var(--font-mono);
+            transition: background 0.1s;
+        }
+
+        .list-row:hover { background-color: var(--bg-hover); }
+
+        /* Kolom Data */
+        .c-bank { color: var(--col-bank); font-weight: 600; }       
+        .c-rek { color: var(--col-rek); font-weight: 400; }        
+        .c-user { color: var(--col-user); font-weight: 400; }      
+        
+        /* Style Khusus Kolom Nama (TANPA LOGO) */
+        .c-nama { 
+            color: var(--col-nama); 
+            font-weight: 400; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
+        }
+
+        .c-amt { color: var(--col-amt); font-weight: 600; text-align: right; }
+
+        .btn-copy {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .list-row:hover .btn-copy { opacity: 1; }
+        .btn-copy:hover { color: var(--primary); }
+
+        /* --- EMPTY STATE --- */
+        .empty {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center; color: var(--text-muted);
+        }
+        .empty span { display: block; font-size: 40px; margin-bottom: 10px; opacity: 0.3; }
+
+        /* --- TOAST --- */
+        #toastArea { position: fixed; top: 20px; right: 20px; z-index: 100; display: flex; flex-direction: column; gap: 10px; }
+        .toast {
+            background: var(--bg-card);
+            border-left: 4px solid var(--primary); 
+            color: var(--text-main);
+            padding: 12px 20px;
+            font-size: 13px;
+            box-shadow: var(--shadow-subtle);
+            border-radius: 4px;
+            animation: slideIn 0.3s forwards;
+            min-width: 250px;
+        }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .list-header, .list-row { grid-template-columns: 80px 1fr 80px 90px 40px; }
+            .c-bank { display: none; }
+        }
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow: auto; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-light); padding: 15px; flex-direction: row; justify-content: space-between; }
+            .nav-menu { display: none; }
+            .main-content { padding: 15px; overflow: visible; }
+            .list-header { display: none; }
+            .list-row { display: grid; grid-template-columns: 1fr auto; gap: 4px; padding: 12px; }
+            .c-rek { grid-column: 1; grid-row: 1; font-size: 14px; }
+            .c-nama { grid-column: 1; grid-row: 2; color: var(--text-muted); font-size: 12px; }
+            .c-user { grid-column: 1; grid-row: 3; color: var(--text-sub); font-size: 12px; }
+            .c-amt { grid-column: 2; grid-row: 1 / span 3; font-size: 14px; }
+            .btn-copy { opacity: 1; grid-column: 2; grid-row: 1 / span 3; margin-right: 30px;}
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon"></div>
+            IRFAN Project
+        </div>
+        <ul class="nav-menu">
+            <li><a href="#" class="nav-link"><span class="nav-icon">🏠</span> Home</a></li>
+            <li><a href="#" class="nav-link"><span class="nav-icon">📊</span> Turnover</a></li>
+            <li><a href="#" class="nav-link active"><span class="nav-icon">💸</span> Withdraw</a></li>
+            <li><a href="#" class="nav-link"><span class="nav-icon">🔑</span> Admin</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <h1>Withdraw Manual</h1>
+            <p>Format Data: Bank - No Rek - User ID - Nama - Jumlah</p>
+        </header>
+
+        <!-- INPUT CARD -->
+        <section class="card">
+            <textarea id="inputData" placeholder="Tempel data tabel di sini..."></textarea>
+            <div class="toolbar">
+                <button class="btn btn-secondary" onclick="clearData()">Reset</button>
+                <button class="btn btn-primary" onclick="copyAll()">Copy Semua (<span id="count">0</span>)</button>
+            </div>
+        </section>
+
+        <!-- RESULT CARD -->
+        <section class="card" style="flex-grow: 1; overflow: hidden;">
+            <!-- Filters with CLEAR MONOGRAM LOGOS -->
+            <div class="filter-area">
+                <div class="chip active" onclick="setFilter('ALL', this)">ALL</div>
+                
+                <div class="chip" onclick="setFilter('BRI', this)">
+                    <!-- BRI Blue -->
+                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#003d79"/><text x="12" y="16.5" font-family="Arial" font-weight="bold" font-size="14" text-anchor="middle" fill="white">R</text></svg> BRI
+                </div>
+                
+                <div class="chip" onclick="setFilter('BCA', this)">
+                    <!-- BCA Blue -->
+                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#005eb8"/><text x="12" y="16.5" font-family="Arial" font-weight="bold" font-size="14" text-anchor="middle" fill="white">B</text></svg> BCA
+                </div>
+                
+                <div class="chip" onclick="setFilter('MANDIRI', this)">
+                    <!-- Mandiri Yellow -->
+                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#ffb81c"/><text x="12" y="16.5" font-family="Arial" font-weight="bold" font-size="14" text-anchor="middle" fill="#000">M</text></svg> MANDIRI
+                </div>
+                
+                <div class="chip" onclick="setFilter('DANA', this)">
+                    <!-- DANA Blue -->
+                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#118EEA"/><text x="12" y="16.5" font-family="Arial" font-weight="bold" font-size="14" text-anchor="middle" fill="white">D</text></svg> DANA
+                </div>
+                
+                <div class="chip" onclick="setFilter('OVO', this)">
+                    <!-- OVO Purple -->
+                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#4c3494"/><text x="12" y="16.5" font-family="Arial" font-weight="bold" font-size="14" text-anchor="middle" fill="white">O</text></svg> OVO
+                </div>
+                
+                <div class="chip" onclick="setFilter('LINK AJA', this)">
+                    <!-- Link Red -->
+                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#ee3124"/><text x="12" y="16.5" font-family="Arial" font-weight="bold" font-size="14" text-anchor="middle" fill="white">L</text></svg> LINK
+                </div>
+                
+                <div class="chip" onclick="setFilter('DANAMON', this)">
+                    <!-- Danamon Blue -->
+                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#00529c"/><text x="12" y="16.5" font-family="Arial" font-weight="bold" font-size="14" text-anchor="middle" fill="white">A</text></svg> DANAMON
+                </div>
+                
+                <div class="chip" onclick="setFilter('SEABANK', this)">
+                    <!-- Sea Orange -->
+                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#ff5e1f"/><text x="12" y="16.5" font-family="Arial" font-weight="bold" font-size="14" text-anchor="middle" fill="white">S</text></svg> SEA
+                </div>
+                
+                <div class="chip" onclick="setFilter('JAGO', this)">
+                    <!-- Jago Navy -->
+                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#091658"/><text x="12" y="16.5" font-family="Arial" font-weight="bold" font-size="14" text-anchor="middle" fill="white">J</text></svg> JAGO
+                </div>
+                
+                <div class="chip" onclick="setFilter('GOPAY', this)">
+                    <!-- Gopay Teal -->
+                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#00AED6"/><text x="12" y="16.5" font-family="Arial" font-weight="bold" font-size="14" text-anchor="middle" fill="white">G</text></svg> GOPAY
+                </div>
+            </div>
+
+            <!-- Header Table -->
+            <div class="list-header">
+                <div>BANK</div>
+                <div>NO REK</div>
+                <div>USER ID</div>
+                <div>NAMA REKENING</div>
+                <div style="text-align:right">JUMLAH</div>
+                <div></div>
+            </div>
+
+            <!-- Data List -->
+            <div id="resultContainer" class="result-wrapper">
+                <div id="emptyState" class="empty">
+                    <span>📂</span>
+                    <p>Belum ada data</p>
+                </div>
+                <!-- Data rows generated by JS -->
+            </div>
+        </section>
+    </main>
+
+    <div id="toastArea"></div>
+
+    <script>
+        const input = document.getElementById('inputData');
+        const container = document.getElementById('resultContainer');
+        const empty = document.getElementById('emptyState');
+        const countEl = document.getElementById('count');
+        const toastArea = document.getElementById('toastArea');
+
+        let currentFilter = 'ALL';
+        let dataStore = [];
+        let clipData = [];
+
+        input.addEventListener('input', process);
+
+        function process() {
+            const txt = input.value.trim();
+            dataStore = [];
+            clipData = [];
+            container.innerHTML = ''; // Bersihkan tampilan lama sepenuhnya
+
+            if (!txt) {
+                showEmpty(true);
+                updateCount(0);
+                return;
+            }
+
+            const lines = txt.split('\n');
+            lines.forEach(line => {
+                const col = line.split(/\t+/);
+                if (col.length > 9) {
+                    const uid = col[1]?.trim() || '';
+                    const nama = col[2]?.trim() || '';
+                    let rek = col[3]?.trim() || '';
+                    let bank = col[4]?.trim().toUpperCase() || '';
+                    let amt = col[9]?.trim() || '';
+
+                    // Format Amount
+                    if(amt.endsWith('.00')) amt = amt.slice(0, -3);
+
+                    // Prefix Logic
+                    if(bank === 'DANA') rek = '3901' + rek;
+                    else if(bank === 'OVO') rek = '39358' + rek;
+                    else if(bank === 'LINK AJA') rek = '09110' + rek;
+                    else if(bank === 'GOPAY') rek = '70001' + rek;
+
+                    // Object
+                    const item = {
+                        bank, rek, uid, nama, amt,
+                        str: `${bank}\t${rek}\t${uid}\t${nama}\t${amt}`
+                    };
+                    dataStore.push(item);
+                }
+            });
+
+            render();
+        }
+
+        function setFilter(bank, el) {
+            currentFilter = bank;
+            
+            // Update UI Active State
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+
+            // Panggil Render Ulang (HANYA Filter, TIDAK Proses Input Lagi)
+            render();
+        }
+
+        function render() {
+            // Bersihkan container sebelum render baru agar tidak ada duplikat
+            container.innerHTML = '';
+            clipData = []; 
+
+            // Filter data
+            const filtered = dataStore.filter(d => currentFilter === 'ALL' || d.bank === currentFilter);
+            
+            updateCount(filtered.length);
+
+            if (filtered.length === 0) {
+                showEmpty(true);
+                return;
+            }
+            showEmpty(false);
+
+            // Generate HTML
+            filtered.forEach(d => {
+                const row = document.createElement('div');
+                row.className = 'list-row';
+                row.innerHTML = `
+                    <div class="c-bank">${d.bank}</div>
+                    <div class="c-rek">${d.rek}</div>
+                    <div class="c-user">${d.uid}</div>
+                    <div class="c-nama">${d.nama}</div>
+                    <div class="c-amt">${d.amt}</div>
+                    <div style="text-align:right">
+                        <button class="btn-copy" onclick="copyRow('${d.str.replace(/'/g, "\\'")}', this)">📋</button>
+                    </div>
+                `;
+                container.appendChild(row);
+                clipData.push(d.str);
+            });
+        }
+
+        function copyAll() {
+            if (clipData.length === 0) return showToast('Tidak ada data', 'err');
+            const text = clipData.join('\n');
+            navigator.clipboard.writeText(text).then(() => showToast('Berhasil copy semua!'));
+        }
+
+        function copyRow(str, btn) {
+            navigator.clipboard.writeText(str).then(() => {
+                showToast('1 baris disalin');
+                const old = btn.innerHTML;
+                btn.innerHTML = '✅';
+                setTimeout(() => btn.innerHTML = old, 1000);
+            });
+        }
+
+        function clearData() {
+            input.value = '';
+            process();
+            showToast('Data direset');
+        }
+
+        function showEmpty(show) {
+            empty.style.display = show ? 'block' : 'none';
+        }
+        function updateCount(n) { countEl.innerText = n; }
+        
+        function showToast(msg, type='info') {
+            const t = document.createElement('div');
+            t.className = 'toast';
+            if(type === 'err') t.style.borderLeftColor = '#ef4444'; 
+            t.innerText = msg;
+            toastArea.appendChild(t);
+            setTimeout(() => t.remove(), 2500);
+        }
+    </script>
+</body>
+</html>
